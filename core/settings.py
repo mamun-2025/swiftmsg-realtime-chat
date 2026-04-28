@@ -82,9 +82,10 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv('REDIS_URL', 'redis://redis:6379/1'),
+        "LOCATION": os.getenv('REDIS_URL', 'redis://redis:6379/0'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "KEY_PREFIX": "swiftmsg",
             "CONNECTION_POOL_KWARGS": {
                 "ssl_cert_reqs": None  # Upstash SSL handle 
             },
