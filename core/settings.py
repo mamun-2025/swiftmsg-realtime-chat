@@ -96,7 +96,7 @@ CACHES = {
 
 # --- Celery Configuration ---
 CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://redis:6379/0')
-CELERY_RESULT_BACKEND = 'django-db' # এর জন্য django-celery-results ইন্সটল থাকতে হবে
+CELERY_RESULT_BACKEND = 'django-db' 
 CELERY_BROKER_USE_SSL = {
     'ssl_cert_reqs': None
 } if "rediss://" in os.getenv('REDIS_URL', '') else False
