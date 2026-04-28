@@ -67,6 +67,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# --- Database Configuration (Neon) ---
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'postgres://mamun:password123@db:5432/task_manager_db'),
+        conn_max_age=600,
+        ssl_require=True if os.getenv('DATABASE_URL') else False  # Neon এর জন্য SSL প্রয়োজন
+    )
+}
+
+# --- Cache Configuration (Upstash Redis) ---
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv('REDIS_URL', 'redis://redis:6379/1'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": None  # Upstash SSL handle 
+            },
+            "REDIS_CLIENT_KWARGS": {
+                "ssl": True if "rediss://" in os.getenv('REDIS_URL', '') else False
+            }
+        }
+    }
+}
 
 
 # --- Celery Configuration ---
