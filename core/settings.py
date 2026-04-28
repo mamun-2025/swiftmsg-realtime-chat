@@ -144,3 +144,5 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'chat.user'
 
 CORS_ALLOW_ALL_ORIGINS = True  # Development 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
