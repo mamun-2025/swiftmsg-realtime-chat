@@ -35,9 +35,9 @@ The project's foundation is complete and fully containerized:
 
 ## 🛤 Roadmap (Coming Soon)
 
-- [ ] API Endpoints: Building DRF Serializers and Views.
+- [x] API Endpoints: Building DRF Serializers and Views.
 
-- [ ] Security: Implementing JWT Authentication.
+- [x] Security: Implementing JWT Authentication.
 
 - [ ] Real-time: Adding WebSockets with Django Channels.
 

@@ -27,7 +27,7 @@ class MessageViewSet(viewsets.ModelViewSet):
       if conversation_id:
          return Message.objects.filter(
             conversation_id=conversation_id,
-            conversation_participants=self.request.user
+            conversation__participants=self.request.user
          ).select_related('sender')
       
       return Message.objects.none()
@@ -47,7 +47,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
          'participants',
          Prefetch(
             'messages',
-            queryset=Message.objects.select_related('-timestamp')
+            queryset=Message.objects.select_related('sender').order_by('-timestamp')
          )
       ).distinct()
    
