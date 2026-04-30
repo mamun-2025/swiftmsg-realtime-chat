@@ -1,6 +1,7 @@
 
 import os 
 from pathlib import Path
+from datetime import timedelta
 import dj_database_url
 import dotenv
 
@@ -34,10 +35,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'django_celery_results',
     'chat', # Our chat app
 ]
+
+# JWT Authentication settings
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+      'rest_framework_simplejwt.authentication.JWTAuthentication',
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+      'rest_framework.permissions.IsAuthenticated',
+   ),
+}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -148,3 +161,10 @@ AUTH_USER_MODEL = 'chat.user'
 CORS_ALLOW_ALL_ORIGINS = True  # Development 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+   'ROTATE_REFRESH_TOKENS': True,
+   'BLACKLIST_AFTER_ROTATION': True,
+}
