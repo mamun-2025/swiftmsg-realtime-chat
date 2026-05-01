@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_celery_results',
+    'drf_spectacular',
     'chat', # Our chat app
 ]
 
@@ -49,6 +50,7 @@ REST_FRAMEWORK = {
    'DEFAULT_PERMISSION_CLASSES': (
       'rest_framework.permissions.IsAuthenticated',
    ),
+   'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
@@ -167,4 +169,12 @@ SIMPLE_JWT = {
    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
    'ROTATE_REFRESH_TOKENS': True,
    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+SPECTACULAR_SETTINGS = {
+   'TITLE': 'SwiftMsg API Documentation',
+   'DESCRIPTION': 'API documentation for SwiftMsg chat application',
+   'VERSION': '1.0.0',
+   'SERVE_INCLUDE_SCHEMA': False,
+   'COMPONENT_SPLIT_PATCH': True,
 }
