@@ -35,9 +35,11 @@ The project's foundation is complete and fully containerized:
 
 ## 🛤 Roadmap (Coming Soon)
 
+- [x] Security: Implementing JWT Authentication.
+
 - [x] API Endpoints: Building DRF Serializers and Views.
 
-- [x] Security: Implementing JWT Authentication.
+- [x] Swagger Documentation: Swagger API documentation using drf-spectacular.
 
 - [ ] Real-time: Adding WebSockets with Django Channels.
 
