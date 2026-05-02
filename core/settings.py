@@ -27,6 +27,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'drf_spectacular',
     'chat', # Our chat app
+    'channels', # For websocket support 
 ]
 
 # JWT Authentication settings
@@ -84,6 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
 
 # --- Database Configuration (Neon) ---
 DATABASES = {
@@ -121,6 +124,15 @@ CELERY_BROKER_USE_SSL = {
 } if "rediss://" in os.getenv('REDIS_URL', '') else False
 
 
+# Channels Layers for WebSockets (Upstash Redis)
+CHANNEL_LAYERS = {
+   "default": {
+      "BACKEND": "channels_redis.core.RedisChannelLayer",
+      "CONFIG": {
+         "hosts": [os.getenv('REDIS_URL', 'redis://redis:6379/0')],
+      },
+   },
+}
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
