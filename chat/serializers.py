@@ -22,6 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
    sender_name = serializers.ReadOnlyField(source='sender.username')
+   sender_detail = UserSerializer(source='sender', read_only=True)
+   
    class Meta:
       model = Message
       fields = [
@@ -42,6 +44,31 @@ class ConversationSerializer(serializers.ModelSerializer):
    def get_last_message(self, obj):
       last_msg = obj.messages.order_by('-timestamp').first()
       if last_msg:
-         return MessageSerializer(last_msg).data
+         return {
+               "id": last_msg.id,
+               "content": last_msg.content,
+               "sender_id": last_msg.sender.id,
+               "sender_name": last_msg.sender.username,
+               "timestamp": last_msg.timestamp.strftime("%Y-%m-%d %H:%M:%S") if last_msg.timestamp else None,
+               "is_read": last_msg.is_read
+           }   
       return None
+   
+class ChatSerializer(serializers.ModelSerializer):
+   user = UserSerializer(read_only=True)
+   last_message = serializers.SerializerMethodField()
+
+   class Meta:
+      model = Conversation
+      fields = ['id', 'user', 'last_message']
+
+   def get_last_message(self, obj):
+       last_msg = obj.get('last_message') if isinstance(obj, dict) else getattr(obj, 'last_message', None)
+       if last_msg:
+          return {
+             "content": last_msg.content,
+             "timestamp": last_msg.timestamp.strftime("%Y-%m-%d %H:%M:%S") if hasattr(last_msg, 'timestamp') else None,
+             "is_read": last_msg.is_read
+          }
+       return None
    

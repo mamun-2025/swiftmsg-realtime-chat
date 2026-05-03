@@ -1,9 +1,13 @@
 from .admin import User
 from .serializers import RegisterSerializer, UserSerializer, MessageSerializer, ConversationSerializer
-from rest_framework import generics, viewsets, permissions
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, viewsets, permissions, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.db.models import Prefetch, Q 
+from django.utils import timezone
 from .models import User, Message, Conversation
-from django.db.models import Prefetch
+
 
 # Create your views here.
 class RegisterView(generics.CreateAPIView):
@@ -28,7 +32,7 @@ class MessageViewSet(viewsets.ModelViewSet):
          return Message.objects.filter(
             conversation_id=conversation_id,
             conversation__participants=self.request.user
-         ).select_related('sender')
+         ).select_related('sender').order_by('timestamp')
       
       return Message.objects.none()
 
@@ -56,4 +60,25 @@ class ConversationViewSet(viewsets.ModelViewSet):
       instance.participants.add(self.request.user)
 
       
+# Additional feature: One to one chat history api
+   @action(detail=False, methods=['get'], url_path='history/(?P<other_user_id>[^/.]+)')
+   def chat_history(self, request, other_user_id=None):
+      me = request.user 
+      try:
+         other_user = User.objects.get(id=other_user_id)
+      except User.DoesNotExist:
+         return Response({"error:": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+      conversation = Conversation.objects.filter(
+         participants=me 
+      ).filter(
+         participants=other_user,
+         is_group_chat=False
+      ).first()
+
+      if not conversation:
+         return Response([], status=status.HTTP_200_OK)
+      
+      messages = conversation.messages.all().select_related('sender').order_by('timestamp')
+      serializer = MessageSerializer(messages, many=True)
+      return Response(serializer.data, status=status.HTTP_200_OK)

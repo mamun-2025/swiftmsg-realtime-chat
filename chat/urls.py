@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import (
 
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'users', UserViewSet, basename='user')
 router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'conversations', ConversationViewSet, basename='conversation')
 

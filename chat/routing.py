@@ -5,7 +5,7 @@ from django.urls import re_path
 def get_websocket_urlpatterns():
     from . import consumers
     return [
-        re_path(r'ws/chat/(?P<other_user_id>\d+)/$', consumers.PrivateChatConsumer.as_view()),
+        re_path(r'ws/chat/(?P<other_user_id>\d+)/$', consumers.PrivateChatConsumer.as_asgi()),
     ]
 
 websocket_urlpatterns = get_websocket_urlpatterns()

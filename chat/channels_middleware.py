@@ -7,16 +7,17 @@ from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
 from urllib.parse import parse_qs
 
-Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 @database_sync_to_async
 def get_user_from_token(token_key):
-    # ফাংশনের ভেতরে ইম্পোর্ট করছি যাতে জ্যাঙ্গো রেডি হওয়ার পরই এটি কল হয়
+    # জ্যাঙ্গো পুরোপুরি লোড হওয়ার পর মডেল ইম্পোর্ট হবে
     from django.contrib.auth import get_user_model
     User = get_user_model()
     
     try:
-        # টোকেন ডিকোড করা
+        # SimpleJWT সাধারণত settings.SECRET_KEY ব্যবহার করে HS256 অ্যালগরিদমে টোকেন সাইন করে।
+        # এখানে algorithms=['HS256'] দিয়ে ডিকোড করা হচ্ছে।
         payload = jwt.decode(token_key, settings.SECRET_KEY, algorithms=['HS256'])
         user_id = payload.get('user_id')
         
@@ -25,25 +26,19 @@ def get_user_from_token(token_key):
             
         return User.objects.get(id=user_id)
         
-    except (jwt.ExpiredSignatureError, jwt.DecodeError):
-        Logger.warning("Expired or invalid JWT token provided for WebSocket.")
-        return AnonymousUser()
-    except User.DoesNotExist:
-        Logger.warning(f"User with ID {user_id} not found from JWT token.")
-        return AnonymousUser()
     except Exception as e:
-        Logger.error(f"Unexpected error during token authentication: {e}")
+        # যেকোনো এরর (যেমন: Expired, Invalid Token, বা Signature mismatch) হলে 
+        # ক্র্যাশ না করে নিরাপদে AnonymousUser রিটার্ন করবে।
+        logger.warning(f"JWT Auth failed: {e}")
         return AnonymousUser()
 
 class JWTAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
-        # scope['query_string'] থেকে নিরাপদ উপায়ে কুয়েরি বের করা
+        # কুয়েরি স্ট্রিং থেকে নিরাপদে টোকেন বের করা
         query_string = scope.get('query_string', b'').decode('utf-8')
-        
-        # urllib.parse এর parse_qs ব্যবহার করা সবচেয়ে নিরাপদ এবং স্ট্যান্ডার্ড
         query_params = parse_qs(query_string)
         
-        # কুয়েরি থেকে টোকেনটি বের করা
+        # 'token' কুয়েরি প্যারামিটারটি খোঁজা
         token = query_params.get('token', [None])[0]
 
         if token:
