@@ -24,7 +24,10 @@ class MessageSerializer(serializers.ModelSerializer):
    sender_name = serializers.ReadOnlyField(source='sender.username')
    class Meta:
       model = Message
-      fields = ['id', 'conversation', 'sender', 'sender_name', 'content', 'message_type', 'file', 'timestamp', 'is_read']
+      fields = [
+         'id', 'conversation', 'sender', 'sender_name', 'sender_detail',
+         'content', 'message_type', 'file', 'timestamp', 'is_read'
+         ]
       read_only_fields = ['timestamp', 'sender']
 
 
