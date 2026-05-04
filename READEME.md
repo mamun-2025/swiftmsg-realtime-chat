@@ -17,6 +17,7 @@ The project's foundation is complete and fully containerized:
 - **Redis (Upstash):** Cloud-based message broker and cache.
 - **Docker:** For consistent development and deployment.
 - **Celery:** To handle background tasks.
+- **Pytest 8.1.1:** Core testing framework with `pytest-django`
 
 ## ⚙️ How to Run
 
@@ -33,6 +34,9 @@ The project's foundation is complete and fully containerized:
 3. Database Migration:
 - docker-compose exec web python manage.py migrate
 
+3. How to Run Pytest:
+- docker-compose exec web pytest -v --reuse-db
+
 ## 🛤 Roadmap (Coming Soon)
 
 - [x] Security: Implementing JWT Authentication.
@@ -41,7 +45,9 @@ The project's foundation is complete and fully containerized:
 
 - [x] Swagger Documentation: Swagger API documentation using drf-spectacular.
 
-- [ ] Real-time: Adding WebSockets with Django Channels.
+- [x] Real-time: Adding WebSockets with Django Channels.
+
+- [x] Testing: Automated REST API and Async WebSocket testing using Pytest. 
 
 - [ ] Storage: Cloud media storage with AWS S3 or Cloudinary.
 

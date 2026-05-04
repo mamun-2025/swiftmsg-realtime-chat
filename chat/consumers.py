@@ -194,7 +194,7 @@ class PrivateChatConsumer(AsyncWebsocketConsumer):
 
 # ----- Database Queries (Optimized & Async Safe) ----- #
    @database_sync_to_async
-   def check_user_exists(self, user_id):
+   def check_other_user_exists(self, user_id):
       return User.objects.filter(id=user_id).exists()
    
    @database_sync_to_async
