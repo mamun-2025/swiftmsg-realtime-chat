@@ -21,7 +21,10 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
 DEBUG = True
 
 # এটি পরিবর্তন করুন
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv(
+   'ALLOWED_HOSTS', 
+   'localhost,127.0.0.1,0.0.0.0,swiftmsg-backend.onrender.com'
+).split(',')
 
 
 # Application definition
